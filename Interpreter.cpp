@@ -44,6 +44,11 @@ std::string getCallTail(const std::string& call)
     return call.substr(pos + 1, call.length() - pos);
 }
 
+std::string getCallRest(const std::string& call)
+{
+    return call.substr(call.find('.') + 1);
+}
+
 void Interpreter::executeCall(Data::Instruction* instruction)
 {
     X_ASSERT(instruction != nullptr);
@@ -80,7 +85,7 @@ void Interpreter::executeLibCall(const std::string& name)
         modules.unload(lib_name);
     } else {
         SharedData data(routines, current, modules);
-        modules.call(getCallHead(name), getCallTail(name), stack, data);
+        modules.call(getCallHead(name), getCallRest(name), stack, data);
     }
 }
 
@@ -98,8 +103,9 @@ void Interpreter::execute(const Data::InstructionTable& instructions)
 
 // Interpreter public member functions implementation starts here
 
-Interpreter::Interpreter(const Data::SubTable& subs, const ModuleLoader& mods, Data::Subroutine* entry)
-    : routines(subs), stack(), current(entry), modules(mods)
+Interpreter::Interpreter(const Data::SubTable& subs, const ModuleLoader& mods, Data::XStack& stack,
+                         Data::Subroutine* entry)
+    : routines(subs), stack(stack), current(entry), modules(mods)
 {
 
 }

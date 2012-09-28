@@ -22,10 +22,11 @@ Data::Subroutine* findSubroutine(Data::SubTable& subs, const std::string& name, 
 
 std::string getCallHead(const std::string& call);
 std::string getCallTail(const std::string& call);
+std::string getCallRest(const std::string& call);
 
 class Interpreter {
     Data::SubTable routines;
-    Data::XStack stack;
+    Data::XStack& stack;
     Data::Subroutine* current;
     ModuleLoader modules;
 
@@ -33,7 +34,8 @@ class Interpreter {
     void executeLibCall(const std::string& name);
     void execute(const Data::InstructionTable& instructions);
 public:
-    Interpreter(const Data::SubTable& subs, const ModuleLoader& mods, Data::Subroutine* entry = nullptr);
+    Interpreter(const Data::SubTable& subs, const ModuleLoader& mods, Data::XStack& stack,
+                Data::Subroutine* entry = nullptr);
     Interpreter(const Interpreter&) = delete;
     Interpreter& operator=(Interpreter&) = delete;
     ~Interpreter() = default;
